@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Stockapp</string>
     <string name="search">Поиск</string>
+    <string name="connection_error_title">Ошибка соединения</string>
+    <string name="connection_error_content">Проверьте подключение к интернету</string>
+    <string name="server_error_title">Ошибка сервера</string>
+    <string name="server_error_content">На сервере произошла непредвиденная ошибка</string>
+    <string name="unknown_error_title">Неизвестная ошибка</string>
+    <string name="unknown_error_content">Произошла неизвестная ошибка</string>
 </resources>

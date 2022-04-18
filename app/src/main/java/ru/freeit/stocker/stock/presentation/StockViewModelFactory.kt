@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

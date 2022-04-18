@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation.adapter
 
 import ru.freeit.stocker.core.view.StockCardView
 import ru.freeit.stocker.core.view.StockLinearLayout

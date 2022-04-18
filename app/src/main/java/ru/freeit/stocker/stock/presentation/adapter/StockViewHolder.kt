@@ -1,11 +1,11 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation.adapter
 
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import ru.freeit.stocker.R
 import ru.freeit.stocker.core.view.*
-import ru.freeit.stocker.stock.ui.models.StockSymbol
+import ru.freeit.stocker.stock.presentation.models.StockSymbol
 
 class StockViewHolder(private val elements: StockViewHolderComponents) : RecyclerView.ViewHolder(elements.root) {
 

@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.Observer
 import kotlinx.coroutines.launch
 import ru.freeit.stocker.core.viewmodel.CoreViewModel
 import ru.freeit.stocker.stock.data.repository.StockRepository
-import ru.freeit.stocker.stock.ui.models.StockState
-import ru.freeit.stocker.stock.ui.models.StockSymbol
+import ru.freeit.stocker.stock.presentation.models.StockState
+import ru.freeit.stocker.stock.presentation.models.StockSymbol
 
 class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
 

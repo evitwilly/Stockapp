@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation.adapter
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable

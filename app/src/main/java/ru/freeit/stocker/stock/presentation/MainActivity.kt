@@ -1,33 +1,30 @@
-package ru.freeit.stocker.stock.ui
+package ru.freeit.stocker.stock.presentation
 
-import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
-import android.view.View
 import android.view.animation.ScaleAnimation
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.isVisible
-import androidx.core.view.marginBottom
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.freeit.stocker.R
 import ru.freeit.stocker.core.App
+import ru.freeit.stocker.core.error.ErrorType
 import ru.freeit.stocker.core.view.*
-import ru.freeit.stocker.stock.ui.models.StockState
+import ru.freeit.stocker.core.view.layout.frameLayoutParams
+import ru.freeit.stocker.core.view.layout.linearLayoutParams
+import ru.freeit.stocker.stock.presentation.adapter.ShimmingAdapter
+import ru.freeit.stocker.stock.presentation.adapter.StockAdapter
+import ru.freeit.stocker.stock.presentation.models.StockState
+import ru.freeit.stocker.stock.presentation.view.ErrorView
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,56 +43,42 @@ class MainActivity : AppCompatActivity() {
         val toolbar = StockLinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(72)
-            ).apply {
-                bottomMargin = dp(8)
-            }
-            setPadding(dp(16), dp(16), dp(16), dp(16))
+            layoutParams(linearLayoutParams().matchWidth().height(dp(72))
+                .marginBottom(dp(8)))
+            padding(dp(16))
         }
         linearLayoutRoot.addView(toolbar)
 
+        val errorView = ErrorView(this).apply {
+            layoutParams(linearLayoutParams().matchWidth().wrapHeight().weight(1f))
+            isVisible = false
+        }
+        linearLayoutRoot.addView(errorView)
+
         val title = StockTextView(this).apply {
             typeface = open_sans_semi_bold
-            fontSize(23f)
             setText(R.string.app_name)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                weight = 1f
-            }
+            fontSize(23f)
+            layoutParams(linearLayoutParams().wrap().weight(1f))
         }
         toolbar.addView(title)
 
         val searchFrameLayout = StockFrameLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                dp(72)
-            ).apply {
-                weight = 1f
-                marginEnd = dp(8)
-            }
+            layoutParams(linearLayoutParams().wrapWidth().height(dp(72))
+                .weight(1f).marginEnd(dp(8)))
             isVisible = false
         }
         toolbar.addView(searchFrameLayout)
-
-
 
         val searchEditText = AppCompatEditText(this).apply {
             typeface = open_sans_medium
             isSingleLine = true
             maxLines = 1
-            fontSize(23f)
             setHint(R.string.search)
-            setPadding(paddingStart, paddingTop, dp(40), paddingBottom)
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER_VERTICAL or Gravity.START
-            }
+            fontSize(23f)
+            padding(end = dp(40))
+            layoutParams(frameLayoutParams().matchWidth().wrapHeight()
+                .gravity(Gravity.CENTER_VERTICAL or Gravity.START))
         }
 
         val runnableSearch = { viewModel.search(searchEditText.text.toString()) }
@@ -114,9 +97,8 @@ class MainActivity : AppCompatActivity() {
                 GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
                 null
             )
-            layoutParams = FrameLayout.LayoutParams(dp(32), dp(32)).apply {
-                gravity = Gravity.END or Gravity.CENTER_VERTICAL
-            }
+            layoutParams(frameLayoutParams().width(dp(32)).height(dp(32))
+                .gravity(Gravity.END or Gravity.CENTER_VERTICAL))
         }
         searchFrameLayout.addView(closeSearchButton)
 
@@ -127,9 +109,7 @@ class MainActivity : AppCompatActivity() {
                 GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
                 null
             )
-            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply {
-                marginEnd = dp(8)
-            }
+            layoutParams(linearLayoutParams().width(dp(40)).height(dp(40)).marginEnd(dp(8)))
             setOnClickListener {
                 isVisible = false
                 title.isVisible = false
@@ -158,30 +138,49 @@ class MainActivity : AppCompatActivity() {
                 GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
                 null
             )
-            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40))
+            layoutParams(linearLayoutParams().width(dp(40)).height(dp(40)))
         }
         toolbar.addView(themeChangeButton)
 
         val stockList = StockRecyclerView(this)
-        val adapter = StockAdapter()
-        stockList.adapter = adapter
         stockList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        stockList.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            weight = 1f
-            marginStart = dp(8)
-            marginEnd = dp(8)
-        }
+        stockList.layoutParams(linearLayoutParams().matchWidth().wrapHeight().weight(1f)
+            .marginStart(dp(8)).marginEnd(dp(8)))
         linearLayoutRoot.addView(stockList)
 
         setContentView(linearLayoutRoot)
 
         viewModel.observe(this) { stockState ->
+            errorView.isVisible = false
+            stockList.isVisible = true
+
             when (stockState) {
-                is StockState.Loading -> adapter.loading()
-                is StockState.Success -> adapter.success(stockState.items)
+                is StockState.Loading -> stockList.adapter = ShimmingAdapter(10)
+                is StockState.Success -> stockList.adapter = StockAdapter(stockState.items)
+                is StockState.Error -> {
+                    stockList.isVisible = false
+                    errorView.isVisible = true
+                    when (stockState.type) {
+                        ErrorType.MISSING_INTERNET -> {
+                            errorView.changeError(
+                                getString(R.string.connection_error_title),
+                                getString(R.string.connection_error_content)
+                            )
+                        }
+                        ErrorType.SERVER_ERROR -> {
+                            errorView.changeError(
+                                getString(R.string.server_error_title),
+                                getString(R.string.server_error_content)
+                            )
+                        }
+                        ErrorType.HAPPEN_WHAT_IS_NOT_SO -> {
+                            errorView.changeError(
+                                getString(R.string.unknown_error_title),
+                                getString(R.string.unknown_error_content)
+                            )
+                        }
+                    }
+                }
             }
         }
 

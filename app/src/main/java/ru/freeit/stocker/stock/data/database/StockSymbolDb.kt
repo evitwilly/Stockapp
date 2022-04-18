@@ -1,7 +1,7 @@
 package ru.freeit.stocker.stock.data.database
 
 import android.content.ContentValues
-import ru.freeit.stocker.stock.ui.models.StockSymbol
+import ru.freeit.stocker.stock.presentation.models.StockSymbol
 
 class StockSymbolDb(
     private val id: Long = 0L,

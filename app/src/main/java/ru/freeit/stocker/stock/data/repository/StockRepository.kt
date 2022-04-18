@@ -5,7 +5,7 @@ import ru.freeit.stocker.core.okhttp.ServerException
 import ru.freeit.stocker.stock.data.database.StockDatabase
 import ru.freeit.stocker.stock.data.internet.StockApiService
 import ru.freeit.stocker.core.error.ErrorType
-import ru.freeit.stocker.stock.ui.models.StockState
+import ru.freeit.stocker.stock.presentation.models.StockState
 import java.net.UnknownHostException
 
 class StockRepository(

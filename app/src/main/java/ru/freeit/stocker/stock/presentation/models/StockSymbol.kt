@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.ui.models
+package ru.freeit.stocker.stock.presentation.models
 
 import ru.freeit.stocker.core.view.StockTextView
 
@@ -6,7 +6,7 @@ class StockSymbol(
     private val symbol: String,
     private val desc: String,
     private val price: Float
-) : StockListItem {
+) {
     fun bindName(view: StockTextView) {
         view.text = symbol
     }
@@ -14,13 +14,11 @@ class StockSymbol(
         view.text = desc
     }
 
-    override fun areContentsTheSame(other: StockListItem): Boolean {
-        if (other !is StockSymbol) return false
-        return symbol == other.symbol && desc == other.desc && price == other.price
+    fun areContentsTheSame(other: StockSymbol): Boolean {
+        return symbol == other.symbol
     }
 
-    override fun areItemsTheSame(other: StockListItem): Boolean {
-        if (other !is StockSymbol) return false
+    fun areItemsTheSame(other: StockSymbol): Boolean {
         return symbol == other.symbol
     }
 
