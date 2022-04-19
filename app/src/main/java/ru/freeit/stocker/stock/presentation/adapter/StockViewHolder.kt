@@ -1,13 +1,18 @@
 package ru.freeit.stocker.stock.presentation.adapter
 
+import android.graphics.Color
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import ru.freeit.stocker.R
+import ru.freeit.stocker.core.theme.Theme
 import ru.freeit.stocker.core.view.*
-import ru.freeit.stocker.core.view.components.StockCardView
-import ru.freeit.stocker.core.view.components.StockLinearLayout
+import ru.freeit.stocker.core.view.components.StockListItemLinearLayout
 import ru.freeit.stocker.core.view.components.StockTextView
+import ru.freeit.stocker.core.view.layout.recyclerLayoutParams
+import ru.freeit.stocker.core.view.layout.vertical
 import ru.freeit.stocker.stock.presentation.models.StockSymbol
 
 class StockViewHolder(private val elements: StockViewHolderComponents) : RecyclerView.ViewHolder(elements.root) {
@@ -20,25 +25,20 @@ class StockViewHolder(private val elements: StockViewHolderComponents) : Recycle
     companion object {
         fun from(parent: ViewGroup) : StockViewHolder {
             val ctx = parent.context
-            val root = StockCardView(ctx).apply {
-                cardElevation = ctx.dp(8f)
-                radius = ctx.dp(8f)
-                layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    marginStart = ctx.dp(8)
-                    marginEnd = ctx.dp(8)
-                    bottomMargin = ctx.dp(8)
-                }
+            val root = CardView(ctx).apply {
+                val dimen = ctx.dp(8)
+                cardElevation = dimen.toFloat()
+                radius = dimen.toFloat()
+                layoutParams(recyclerLayoutParams().matchWidth().wrapHeight()
+                    .marginStart(dimen).marginEnd(dimen).marginBottom(dimen))
             }
-            val linear = StockLinearLayout(ctx).apply {
-                orientation = LinearLayout.VERTICAL
+            val linear = StockListItemLinearLayout(ctx).apply {
+                vertical()
             }
             root.addView(linear)
 
             val padding = ctx.dp(8)
-            val symbol = StockTextView(ctx).apply {
+            val symbol = AppCompatTextView(ctx).apply {
                 typeface = open_sans_semi_bold
                 setBackgroundColor(ctx.colorBy(R.color.green_500))
                 setTextColor(ctx.colorBy(R.color.white))
@@ -57,7 +57,7 @@ class StockViewHolder(private val elements: StockViewHolderComponents) : Recycle
                 fontSize(19f)
             }
             linear.addView(symbol, price, desc)
-            return StockViewHolder(StockViewHolderComponents(root, linear, symbol, desc))
+            return StockViewHolder(StockViewHolderComponents(root, symbol, desc))
         }
     }
 }

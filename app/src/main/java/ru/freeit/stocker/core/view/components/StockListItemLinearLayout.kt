@@ -6,7 +6,7 @@ import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.theme.Theme
 import ru.freeit.stocker.core.view.colors.StockColors
 
-open class StockLinearLayout(ctx: Context) : LinearLayout(ctx) {
+class StockListItemLinearLayout(ctx: Context) : LinearLayout(ctx) {
 
     private val themeManager = (context.applicationContext as App).module.themeManager()
 
@@ -14,9 +14,9 @@ open class StockLinearLayout(ctx: Context) : LinearLayout(ctx) {
         if (theme == Theme.LIGHT)
             setBackgroundColor(StockColors.white)
         else
-            setBackgroundColor(StockColors.black)
-    }
+            setBackgroundColor(StockColors.black200)
 
+    }
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         themeManager.addThemeListener(listener)

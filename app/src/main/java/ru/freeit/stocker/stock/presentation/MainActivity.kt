@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             stockList.isVisible = true
 
             when (stockState) {
-                is StockState.Loading -> stockList.adapter = ShimmingAdapter(10)
+                is StockState.Loading -> stockList.adapter = ShimmingAdapter(10, themeManager)
                 is StockState.Success -> stockList.adapter = StockAdapter(stockState.items())
                 is StockState.Error -> {
                     stockList.isVisible = false

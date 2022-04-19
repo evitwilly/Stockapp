@@ -1,16 +1,16 @@
 package ru.freeit.stocker.stock.presentation.models
 
-import ru.freeit.stocker.core.view.components.StockTextView
+import android.widget.TextView
 
 class StockSymbol(
     private val symbol: String,
     private val desc: String,
     private val price: Float
 ) {
-    fun bindName(view: StockTextView) {
+    fun bindName(view: TextView) {
         view.text = symbol
     }
-    fun bindDesc(view: StockTextView) {
+    fun bindDesc(view: TextView) {
         view.text = desc
     }
 
