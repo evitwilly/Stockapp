@@ -10,10 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import okhttp3.WebSocketListener
 import ru.freeit.stocker.R
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.error.ErrorType
 import ru.freeit.stocker.core.view.*
+import ru.freeit.stocker.core.view.colors.StockColors
 import ru.freeit.stocker.core.view.components.*
 import ru.freeit.stocker.core.view.layout.frameLayoutParams
 import ru.freeit.stocker.core.view.layout.horizontal
@@ -21,19 +26,23 @@ import ru.freeit.stocker.core.view.layout.linearLayoutParams
 import ru.freeit.stocker.core.view.layout.vertical
 import ru.freeit.stocker.stock.presentation.adapter.ShimmingAdapter
 import ru.freeit.stocker.stock.presentation.adapter.StockAdapter
+import ru.freeit.stocker.stock.presentation.adapter.StockWebSocketListener
 import ru.freeit.stocker.stock.presentation.helpers.Debounce
 import ru.freeit.stocker.stock.presentation.models.StockState
 import ru.freeit.stocker.stock.presentation.view.ErrorView
 
 class MainActivity : AppCompatActivity() {
 
+    private var viewModel: StockViewModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor = colorBy(R.color.green_500)
+        window.statusBarColor = StockColors.green500
 
         val viewModel = ViewModelProvider(this, (application as App).module.stockViewModelFactory())
             .get(StockViewModel::class.java)
+        this.viewModel = viewModel
 
         val linearLayoutRoot = StockLinearLayout(this).apply {
             vertical()
@@ -83,11 +92,6 @@ class MainActivity : AppCompatActivity() {
 
         val closeSearchButton = StockImageButton(this).apply {
             setImageResource(R.drawable.ic_close_24)
-            background = RippleDrawable(
-                ColorStateList.valueOf(colorBy(R.color.green_500)),
-                GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
-                null
-            )
             layoutParams(frameLayoutParams().width(dp(32)).height(dp(32))
                 .gravity(Gravity.END or Gravity.CENTER_VERTICAL))
         }
@@ -95,11 +99,6 @@ class MainActivity : AppCompatActivity() {
 
         val searchButton = StockImageButton(this).apply {
             setImageResource(R.drawable.ic_search_24)
-            background = RippleDrawable(
-                ColorStateList.valueOf(colorBy(R.color.green_500)),
-                GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
-                null
-            )
             layoutParams(linearLayoutParams().width(dp(40)).height(dp(40)).marginEnd(dp(8)))
             setOnClickListener {
                 isVisible = false
@@ -138,13 +137,16 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(linearLayoutRoot)
 
+        val scope = CoroutineScope(Dispatchers.Main + Job())
+
         viewModel.observe(this) { stockState ->
             errorView.isVisible = false
             stockList.isVisible = true
 
+
             when (stockState) {
                 is StockState.Loading -> stockList.adapter = ShimmingAdapter(10, themeManager)
-                is StockState.Success -> stockList.adapter = StockAdapter(stockState.items())
+                is StockState.Success -> stockList.adapter = StockAdapter(stockState.items(), scope, viewModel)
                 is StockState.Error -> {
                     stockList.isVisible = false
                     errorView.isVisible = true
@@ -172,6 +174,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel?.bindWebSocket()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel?.unbindWebSocket()
     }
 
 }

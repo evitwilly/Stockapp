@@ -4,23 +4,16 @@ import android.content.ContentValues
 import ru.freeit.stocker.stock.presentation.models.StockSymbol
 
 class StockSymbolDb(
-    private val id: Long = 0L,
+    private val id: Long,
     private val symbol: String,
     private val desc: String,
     private val price: Float = 0f
 ) {
 
-    fun id() = id.toString()
+    fun id() = id
+    fun name() = symbol
+    fun description() = desc
+    fun price() = price
 
-    fun symbol(content: ContentValues, key: String) {
-        content.put(key, symbol)
-    }
-    fun desc(content: ContentValues, key: String) {
-        content.put(key, desc)
-    }
-    fun price(content: ContentValues, key: String) {
-        content.put(key, price)
-    }
-
-    fun toUi() = StockSymbol(symbol, desc, price)
+    fun ui() = StockSymbol(id, symbol, desc, price)
 }

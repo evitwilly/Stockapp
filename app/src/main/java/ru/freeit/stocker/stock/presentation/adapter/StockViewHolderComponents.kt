@@ -8,5 +8,6 @@ import ru.freeit.stocker.core.view.components.StockTextView
 class StockViewHolderComponents(
     val root: CardView,
     val symbol: TextView,
-    val desc: TextView
+    val desc: TextView,
+    val price: TextView
 )
