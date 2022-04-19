@@ -2,11 +2,6 @@ package ru.freeit.stocker.core.okhttp
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONObject
-import ru.freeit.stocker.core.coroutines.default
-import java.lang.IllegalArgumentException
-
-class ServerException : Exception("server exception")
 
 class OkHttpPrettyClient(private val okHttp: OkHttpClient) {
 

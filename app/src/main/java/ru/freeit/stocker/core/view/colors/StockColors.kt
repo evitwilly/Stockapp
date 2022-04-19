@@ -1,4 +1,4 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.colors
 
 import android.graphics.Color
 

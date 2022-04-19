@@ -1,6 +1,6 @@
 package ru.freeit.stocker.stock.presentation.models
 
-import ru.freeit.stocker.core.view.StockTextView
+import ru.freeit.stocker.core.view.components.StockTextView
 
 class StockSymbol(
     private val symbol: String,

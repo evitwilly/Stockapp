@@ -1,4 +1,4 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.components
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -7,6 +7,8 @@ import android.graphics.drawable.RippleDrawable
 import androidx.appcompat.widget.AppCompatImageButton
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.theme.Theme
+import ru.freeit.stocker.core.view.colors.StockColors
+import ru.freeit.stocker.core.view.dp
 
 class StockImageButton(ctx: Context) : AppCompatImageButton(ctx) {
 

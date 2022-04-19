@@ -1,11 +1,10 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.components
 
 import android.content.Context
-import android.graphics.Color
 import android.widget.LinearLayout
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.theme.Theme
-import ru.freeit.stocker.core.theme.ThemeManager
+import ru.freeit.stocker.core.view.colors.StockColors
 
 class StockLinearLayout(ctx: Context) : LinearLayout(ctx) {
 

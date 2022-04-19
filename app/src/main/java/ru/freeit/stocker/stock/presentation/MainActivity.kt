@@ -14,12 +14,14 @@ import ru.freeit.stocker.R
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.error.ErrorType
 import ru.freeit.stocker.core.view.*
+import ru.freeit.stocker.core.view.components.*
 import ru.freeit.stocker.core.view.layout.frameLayoutParams
 import ru.freeit.stocker.core.view.layout.horizontal
 import ru.freeit.stocker.core.view.layout.linearLayoutParams
 import ru.freeit.stocker.core.view.layout.vertical
 import ru.freeit.stocker.stock.presentation.adapter.ShimmingAdapter
 import ru.freeit.stocker.stock.presentation.adapter.StockAdapter
+import ru.freeit.stocker.stock.presentation.helpers.Debounce
 import ru.freeit.stocker.stock.presentation.models.StockState
 import ru.freeit.stocker.stock.presentation.view.ErrorView
 

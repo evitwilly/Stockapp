@@ -7,6 +7,9 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import ru.freeit.stocker.core.view.*
+import ru.freeit.stocker.core.view.components.StockCardView
+import ru.freeit.stocker.core.view.components.StockLinearLayout
+import ru.freeit.stocker.core.view.components.StockTextView
 
 class ShimmingViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(ShimmerFrameLayout(parent.context).apply {
     layoutParams = RecyclerView.LayoutParams(

@@ -1,32 +1,6 @@
 package ru.freeit.stocker.core.theme
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-import android.graphics.Color
-
-enum class Theme(bgColor: Int) {
-    LIGHT(Color.rgb(255, 255, 255)),
-    DARK(Color.rgb(0, 0, 0))
-}
-
-interface IntPrefs {
-    fun int(key: String, default: Int) : Int
-    fun saveInt(key: String, value: Int)
-}
-
-class AppPrefs(ctx: Context) : IntPrefs {
-
-    private val prefs = ctx.getSharedPreferences(app_prefs, MODE_PRIVATE)
-    private val edit = prefs.edit()
-
-    override fun int(key: String, default: Int): Int = prefs.getInt(key, default)
-    override fun saveInt(key: String, value: Int) { edit.putInt(key, value).apply() }
-
-    companion object {
-        private const val app_prefs = "application_prefs"
-    }
-}
+import ru.freeit.stocker.core.prefs.IntPrefs
 
 class ThemeManager(private val prefs: IntPrefs) {
 

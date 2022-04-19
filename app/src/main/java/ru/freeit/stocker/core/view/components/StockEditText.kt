@@ -1,4 +1,4 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.components
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +8,9 @@ import android.util.StateSet
 import androidx.appcompat.widget.AppCompatEditText
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.theme.Theme
+import ru.freeit.stocker.core.view.colors.StockColors
+import ru.freeit.stocker.core.view.dp
+import ru.freeit.stocker.core.view.padding
 
 class StockEditText(ctx: Context) : AppCompatEditText(ctx) {
     init {

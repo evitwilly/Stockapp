@@ -1,19 +1,20 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.components
 
 import android.content.Context
-import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatTextView
 import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.theme.Theme
+import ru.freeit.stocker.core.view.colors.StockColors
 
-class StockFrameLayout(ctx: Context) : FrameLayout(ctx) {
+class StockTextView(ctx: Context) : AppCompatTextView(ctx) {
 
     private val themeManager = (context.applicationContext as App).module.themeManager()
 
     private val listener: (Theme) -> Unit = { theme ->
         if (theme == Theme.LIGHT)
-            setBackgroundColor(StockColors.white)
+            setTextColor(StockColors.black)
         else
-            setBackgroundColor(StockColors.black)
+            setTextColor(StockColors.white)
     }
 
     override fun onAttachedToWindow() {

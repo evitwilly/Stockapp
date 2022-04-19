@@ -1,4 +1,4 @@
-package ru.freeit.stocker.stock.presentation
+package ru.freeit.stocker.stock.presentation.helpers
 
 import android.os.Handler
 import android.os.Looper

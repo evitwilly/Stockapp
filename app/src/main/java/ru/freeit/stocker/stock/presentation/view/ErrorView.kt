@@ -1,13 +1,11 @@
 package ru.freeit.stocker.stock.presentation.view
 
 import android.content.Context
-import android.graphics.Color
 import android.view.Gravity
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Space
 import ru.freeit.stocker.core.view.*
-import ru.freeit.stocker.core.view.layout.frameLayoutParams
+import ru.freeit.stocker.core.view.components.StockTextView
 import ru.freeit.stocker.core.view.layout.linearLayoutParams
 
 class ErrorView(ctx: Context) : LinearLayout(ctx) {

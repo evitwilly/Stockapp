@@ -1,4 +1,4 @@
-package ru.freeit.stocker.core.view
+package ru.freeit.stocker.core.view.components
 
 import android.content.Context
 import androidx.cardview.widget.CardView
