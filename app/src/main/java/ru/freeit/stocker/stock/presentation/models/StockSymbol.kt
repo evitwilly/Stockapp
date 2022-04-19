@@ -14,13 +14,7 @@ class StockSymbol(
         view.text = desc
     }
 
-    fun areContentsTheSame(other: StockSymbol): Boolean {
-        return symbol == other.symbol
-    }
-
-    fun areItemsTheSame(other: StockSymbol): Boolean {
-        return symbol == other.symbol
-    }
+    fun symbolStr() = symbol
 
     fun matches(keyword: String) = symbol.lowercase().startsWith(keyword.lowercase())
 

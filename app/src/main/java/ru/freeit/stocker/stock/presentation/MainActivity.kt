@@ -4,15 +4,10 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Gravity
 import android.view.animation.ScaleAnimation
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.freeit.stocker.R
@@ -20,7 +15,9 @@ import ru.freeit.stocker.core.App
 import ru.freeit.stocker.core.error.ErrorType
 import ru.freeit.stocker.core.view.*
 import ru.freeit.stocker.core.view.layout.frameLayoutParams
+import ru.freeit.stocker.core.view.layout.horizontal
 import ru.freeit.stocker.core.view.layout.linearLayoutParams
+import ru.freeit.stocker.core.view.layout.vertical
 import ru.freeit.stocker.stock.presentation.adapter.ShimmingAdapter
 import ru.freeit.stocker.stock.presentation.adapter.StockAdapter
 import ru.freeit.stocker.stock.presentation.models.StockState
@@ -37,14 +34,13 @@ class MainActivity : AppCompatActivity() {
             .get(StockViewModel::class.java)
 
         val linearLayoutRoot = StockLinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
+            vertical()
         }
 
         val toolbar = StockLinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
+            horizontal()
             gravity = Gravity.CENTER_VERTICAL
-            layoutParams(linearLayoutParams().matchWidth().height(dp(72))
-                .marginBottom(dp(8)))
+            layoutParams(linearLayoutParams().matchWidth().height(dp(72)).marginBottom(dp(8)))
             padding(dp(16))
         }
         linearLayoutRoot.addView(toolbar)
@@ -70,24 +66,17 @@ class MainActivity : AppCompatActivity() {
         }
         toolbar.addView(searchFrameLayout)
 
-        val searchEditText = AppCompatEditText(this).apply {
+        val searchEditText = StockEditText(this).apply {
             typeface = open_sans_medium
             isSingleLine = true
             maxLines = 1
             setHint(R.string.search)
             fontSize(23f)
-            padding(end = dp(40))
             layoutParams(frameLayoutParams().matchWidth().wrapHeight()
                 .gravity(Gravity.CENTER_VERTICAL or Gravity.START))
         }
-
-        val runnableSearch = { viewModel.search(searchEditText.text.toString()) }
-        val handler = Handler(Looper.getMainLooper())
-        searchEditText.doOnTextChanged { _, _, _, _ ->
-            handler.removeCallbacks(runnableSearch)
-            handler.postDelayed(runnableSearch, 1000L)
-        }
-
+        val debounce = Debounce()
+        debounce.setup(searchEditText, viewModel::search)
         searchFrameLayout.addView(searchEditText)
 
         val closeSearchButton = StockImageButton(this).apply {
@@ -131,13 +120,10 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
+        val themeManager = (application as App).module.themeManager()
         val themeChangeButton = StockImageButton(this).apply {
             setImageResource(R.drawable.ic_dark_mode_24)
-            background = RippleDrawable(
-                ColorStateList.valueOf(colorBy(R.color.green_500)),
-                GradientDrawable().apply { cornerRadius = dp(50f); setColor(colorBy(R.color.white)) },
-                null
-            )
+            setOnClickListener { themeManager.toggleTheme() }
             layoutParams(linearLayoutParams().width(dp(40)).height(dp(40)))
         }
         toolbar.addView(themeChangeButton)
@@ -156,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
             when (stockState) {
                 is StockState.Loading -> stockList.adapter = ShimmingAdapter(10)
-                is StockState.Success -> stockList.adapter = StockAdapter(stockState.items)
+                is StockState.Success -> stockList.adapter = StockAdapter(stockState.items())
                 is StockState.Error -> {
                     stockList.isVisible = false
                     errorView.isVisible = true

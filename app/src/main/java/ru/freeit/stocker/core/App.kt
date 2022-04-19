@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import okhttp3.OkHttpClient
 import ru.freeit.stocker.core.okhttp.OkHttpPrettyClient
+import ru.freeit.stocker.core.theme.AppPrefs
+import ru.freeit.stocker.core.theme.ThemeManager
 import ru.freeit.stocker.stock.data.database.StockDatabase
 import ru.freeit.stocker.stock.data.internet.StockApiService
 import ru.freeit.stocker.stock.data.repository.StockRepository
@@ -18,6 +20,10 @@ class CoreModule(ctx: Context) {
         .readTimeout(5, TimeUnit.SECONDS).build()))
     }
 
+    private val prefs by lazy { AppPrefs(ctx) }
+    private val themeManager by lazy { ThemeManager(prefs) }
+
+    fun themeManager() = themeManager
     fun stockViewModelFactory() = StockViewModelFactory(StockRepository(service, database))
 }
 

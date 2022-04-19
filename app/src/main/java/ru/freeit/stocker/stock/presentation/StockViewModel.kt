@@ -22,7 +22,7 @@ class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
             val result = repo.stockSymbols()
             state.value = result
             if (result is StockState.Success) {
-                cache.addAll(result.items)
+                cache.addAll(result.items())
             }
         }
     }
