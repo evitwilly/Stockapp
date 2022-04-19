@@ -24,6 +24,7 @@ class ErrorView(ctx: Context) : LinearLayout(ctx) {
         padding(context.dp(16))
 
         title.fontSize(21f)
+        title.gravity = Gravity.CENTER_HORIZONTAL
         title.typeface = title.open_sans_semi_bold
         title.layoutParams(linearLayoutParams()
             .marginTop(context.dp(32)).wrap())
@@ -36,6 +37,7 @@ class ErrorView(ctx: Context) : LinearLayout(ctx) {
         })
 
         content.fontSize(18f)
+        content.gravity = Gravity.CENTER_HORIZONTAL
         content.typeface = content.open_sans_medium
         content.layoutParams(linearLayoutParams().wrap())
 
