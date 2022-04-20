@@ -1,5 +1,7 @@
 package ru.freeit.stocker.stock.data.repository
 
+import android.util.Log
+import kotlinx.coroutines.launch
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import ru.freeit.stocker.core.coroutines.default
@@ -43,7 +45,7 @@ class StockRepository(
         try {
             val serverStockSymbols = service.stockSymbols()
             val databaseStockSymbols = serverStockSymbols.mapIndexed { index, server -> server.toDatabase(index + 1L) }
-            database.saveStockSymbols(databaseStockSymbols)
+            launch { database.saveStockSymbols(databaseStockSymbols) }
             StockState.Success(databaseStockSymbols.map { database -> database.ui() })
         } catch(exc: Exception) {
             val databaseStockSymbols = database.stockSymbols()

@@ -1,9 +1,12 @@
 package ru.freeit.stocker.stock.presentation
 
-import android.content.res.ColorStateList
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.RippleDrawable
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.animation.ScaleAnimation
 import androidx.appcompat.app.AppCompatActivity
@@ -13,9 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import okhttp3.WebSocketListener
 import ru.freeit.stocker.R
 import ru.freeit.stocker.core.App
+import ru.freeit.stocker.core.connection.InternetConnectionReceiver
+import ru.freeit.stocker.core.connection.InternetConnectionSubscribers
 import ru.freeit.stocker.core.error.ErrorType
 import ru.freeit.stocker.core.view.*
 import ru.freeit.stocker.core.view.colors.StockColors
@@ -26,7 +30,6 @@ import ru.freeit.stocker.core.view.layout.linearLayoutParams
 import ru.freeit.stocker.core.view.layout.vertical
 import ru.freeit.stocker.stock.presentation.adapter.ShimmingAdapter
 import ru.freeit.stocker.stock.presentation.adapter.StockAdapter
-import ru.freeit.stocker.stock.presentation.adapter.StockWebSocketListener
 import ru.freeit.stocker.stock.presentation.helpers.Debounce
 import ru.freeit.stocker.stock.presentation.models.StockState
 import ru.freeit.stocker.stock.presentation.view.ErrorView
@@ -34,6 +37,8 @@ import ru.freeit.stocker.stock.presentation.view.ErrorView
 class MainActivity : AppCompatActivity() {
 
     private var viewModel: StockViewModel? = null
+    private val subscribers = InternetConnectionSubscribers()
+    private val receiver = InternetConnectionReceiver(subscribers)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity() {
             layoutParams(linearLayoutParams().matchWidth().wrapHeight().weight(1f))
             isVisible = false
         }
+        errorView.changeRetryListener(viewModel::tryAgain)
         linearLayoutRoot.addView(errorView)
 
         val title = StockTextView(this).apply {
@@ -69,6 +75,11 @@ class MainActivity : AppCompatActivity() {
             layoutParams(linearLayoutParams().wrap().weight(1f))
         }
         toolbar.addView(title)
+
+        subscribers.subscribe { isConnected ->
+            title.setText(if (isConnected) R.string.app_name else R.string.networking)
+            viewModel.toggleInternetConnection(isConnected)
+        }
 
         val searchFrameLayout = StockFrameLayout(this).apply {
             layoutParams(linearLayoutParams().wrapWidth().height(dp(72))
@@ -142,8 +153,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.observe(this) { stockState ->
             errorView.isVisible = false
             stockList.isVisible = true
-
-
             when (stockState) {
                 is StockState.Loading -> stockList.adapter = ShimmingAdapter(10, themeManager)
                 is StockState.Success -> stockList.adapter = StockAdapter(stockState.items(), scope, viewModel)
@@ -174,6 +183,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        registerReceiver(receiver, IntentFilter().apply {
+            addAction("android.net.conn.CONNECTIVITY_CHANGE")
+        })
     }
 
     override fun onStart() {
@@ -184,6 +196,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel?.unbindWebSocket()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
 }

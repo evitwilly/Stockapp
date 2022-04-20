@@ -8,4 +8,6 @@
     <string name="unknown_error_title">Неизвестная ошибка</string>
     <string name="unknown_error_content">Произошла неизвестная ошибка</string>
     <string name="loading">...$</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="networking">Соединение...</string>
 </resources>

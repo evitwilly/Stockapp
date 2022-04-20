@@ -15,6 +15,7 @@ import ru.freeit.stocker.stock.presentation.models.StockSymbol
 class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
 
     private var socket: WebSocket? = null
+    private var isInternetConnected: Boolean = false
     private val listener = StockWebSocketListener()
     private val cache = mutableListOf<StockSymbol>()
 
@@ -22,6 +23,20 @@ class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
     fun observe(owner: LifecycleOwner, observer: Observer<StockState>) = state.observe(owner, observer)
 
     init {
+        loadData()
+    }
+
+    fun tryAgain() {
+        if (isInternetConnected) {
+            loadData()
+        }
+    }
+
+    fun toggleInternetConnection(isConnected: Boolean) {
+        this.isInternetConnected = isConnected
+    }
+
+    private fun loadData() {
         ui.launch {
             state.value = StockState.Loading
             val result = repo.stockSymbols()
@@ -51,5 +66,4 @@ class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
     fun unbindWebSocket() {
         socket?.cancel()
     }
-
 }
