@@ -21,8 +21,9 @@ API: https://finnhub.io/
   </tr>
   
   <tr>
-    <td><img src="screens/screen7.png" /></td>
-    <td><img src="screens/screen8.png" /></td>
+    <td><img src="screens/screen9.png" /></td>
+    <td><img src="screens/screen10.png" /></td>
+    <td><img src="screens/screen11.png" /></td>
   </tr>
   
 </table>
