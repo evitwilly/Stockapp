@@ -1,5 +1,6 @@
 package ru.freeit.stocker.stock.presentation
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -64,6 +65,7 @@ class StockViewModel(private val repo: StockRepository) : CoreViewModel() {
     }
 
     fun unbindWebSocket() {
+        Log.d("TEST_", "ok -> $socket")
         socket?.cancel()
     }
 }
